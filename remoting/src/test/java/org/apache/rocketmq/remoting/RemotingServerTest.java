@@ -51,6 +51,7 @@ public class RemotingServerTest {
         remotingServer.registerProcessor(0, new NettyRequestProcessor() {
             @Override
             public RemotingCommand processRequest(ChannelHandlerContext ctx, RemotingCommand request) {
+                System.out.println("hello world");
                 request.setRemark("Hi " + ctx.channel().remoteAddress());
                 return request;
             }
@@ -94,12 +95,16 @@ public class RemotingServerTest {
         RequestHeader requestHeader = new RequestHeader();
         requestHeader.setCount(1);
         requestHeader.setMessageTitle("Welcome");
-        RemotingCommand request = RemotingCommand.createRequestCommand(0, requestHeader);
-        RemotingCommand response = remotingClient.invokeSync("localhost:8888", request, 1000 * 3);
+        RemotingCommand request = RemotingCommand.createRequestCommand(0, new CommandCustomHeader() {
+            @Override
+            public void checkFields() throws RemotingCommandException {
+                // no-check
+            }
+        });
+        RemotingCommand response = remotingClient.invokeSync("localhost:8888", request, 1000 * 60);
         assertTrue(response != null);
         assertThat(response.getLanguage()).isEqualTo(LanguageCode.JAVA);
-        assertThat(response.getExtFields()).hasSize(2);
-
+        System.out.println(request.getCode());
     }
 
     @Test

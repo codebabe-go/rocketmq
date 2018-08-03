@@ -270,8 +270,8 @@ public class BrokerController {
             this.registerProcessor();
 
             final long initialDelay = UtilAll.computNextMorningTimeMillis() - System.currentTimeMillis();
-            final long period = 1000 * 60 * 60 * 24;
-            this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+            final long period = 1000 * 60 * 60 * 24; // 默认一天
+            this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() { // 记录昨天的消息情况
                 @Override
                 public void run() {
                     try {
